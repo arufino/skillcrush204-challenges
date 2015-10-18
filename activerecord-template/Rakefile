@@ -1,9 +1,9 @@
-require 'rake'
-require 'rspec/core/rake_task'
-require 'active_support'
-require 'active_support/core_ext'
+require "rake"
+require "rspec/core/rake_task"
+require "active_support"
+require "active_support/core_ext"
 
-require_relative 'config'
+require_relative "config"
 
 namespace :db do
   desc "Drop, create, and migrate the database"
@@ -12,7 +12,7 @@ namespace :db do
   desc "Create #{APP_NAME} databases"
   task "create" do
     puts "Creating #{APP_NAME} development and test databases if they don't exist..."
-    system("createdb #{DB_NAME} --username #{DB_USERNAME} -w --no-password && createdb #{TEST_DB_NAME} --username #{DB_USERNAME} -w --no-password")
+    system("createdb #{DB_NAME} --username=#{DB_USERNAME} && createdb #{TEST_DB_NAME} --username=#{DB_USERNAME}")
   end
 
   desc "Drop #{APP_NAME} databases"
@@ -23,14 +23,14 @@ namespace :db do
 
   desc "Migrate the database"
   task "migrate" do
-    ActiveRecord::Migrator.migrations_paths << File.dirname(__FILE__) + 'db/migrate'
+    ActiveRecord::Migrator.migrations_paths << File.dirname(__FILE__) + "db/migrate"
     ActiveRecord::Migration.verbose = true
     ActiveRecord::Migrator.migrate(ActiveRecord::Migrator.migrations_paths, nil)
   end
 
   desc "Populate the database with sample data"
   task "seed" do
-    require APP_ROOT.join('db', 'seeds.rb')
+    require APP_ROOT.join("db", "seeds.rb")
   end
 end
 
@@ -41,11 +41,11 @@ namespace :generate do
       raise "Must specify NAME for migration, e.g. rake generate:migration NAME=create_people"
     end
 
-    migration_name = ENV['NAME']
+    migration_name = ENV["NAME"]
     class_name = migration_name.camelize
-    timestamp = Time.now.strftime('%Y%m%d%H%M%S')
+    timestamp = Time.now.strftime("%Y%m%d%H%M%S")
     filename = "#{timestamp}_#{migration_name}.rb"
-    path = APP_ROOT.join('db', 'migrate', filename)
+    path = APP_ROOT.join("db", "migrate", filename)
 
     if File.exist?(path)
       raise "ERROR! File '#{path}' already exists"
@@ -58,7 +58,7 @@ namespace :generate do
   end
 end
 
-desc 'Start IRB with application environment loaded'
+desc "Start IRB with application environment loaded"
 task "console" do
   exec "irb -r./config"
 end
